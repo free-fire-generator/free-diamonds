@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Free Fire Diamond Generator</title>
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(180deg, #330000 0%, #1a0000 100%);
-      overflow: hidden;
+      overflow-x: hidden;
       color: white;
     }
 
@@ -41,7 +41,7 @@
 
     .generator-box {
       max-width: 400px;
-      margin: 50px auto;
+      margin: 60px auto;
       background: rgba(0, 0, 0, 0.85);
       border-radius: 15px;
       box-shadow: 0 0 20px #ff000088;
@@ -77,20 +77,6 @@
       background: #cc0000;
     }
 
-    .profile {
-      display: none;
-      margin-top: 15px;
-      border: 1px solid #444;
-      padding: 10px;
-      border-radius: 8px;
-    }
-
-    .profile img {
-      width: 60px;
-      border-radius: 50%;
-      margin-bottom: 5px;
-    }
-
     .console {
       background: #111;
       color: #0f0;
@@ -104,29 +90,38 @@
       font-size: 14px;
     }
 
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.9);
+    .checkbox-box {
+      margin-top: 15px;
+      display: flex;
       justify-content: center;
       align-items: center;
-      z-index: 999;
-    }
-
-    .modal-content {
-      background: #1a0000;
-      padding: 20px;
+      gap: 10px;
+      background: #111;
+      padding: 10px 20px;
       border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 0 15px red;
+      border: 2px solid #333;
     }
 
-    .modal button {
-      background: #ff0000;
+    #verifyBtn {
+      background: #00cc00;
       color: white;
-      margin-top: 10px;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    #finalResult {
+      margin-top: 20px;
+      font-size: 16px;
+      color: lightgreen;
+      display: none;
+    }
+
+    .footer-note {
+      margin-top: 30px;
+      font-size: 12px;
+      color: #aaa;
+      text-align: center;
+      font-style: italic;
     }
 
     @keyframes fadeIn {
@@ -155,21 +150,18 @@
   </select>
   <button onclick="startGeneration()">Generate Diamonds</button>
 
-  <div class="profile" id="profileBox">
-    <img src="https://i.ibb.co/Fn0rsqX/avatar-ff.png" alt="Avatar">
-    <p><strong>Username:</strong> GhostHunter</p>
-    <p><strong>Level:</strong> 62</p>
-  </div>
-
   <div class="console" id="consoleBox"></div>
-</div>
 
-<div class="modal" id="verifyModal">
-  <div class="modal-content">
-    <h3>🔒 Bot Authentication Failed</h3>
-    <p>Your device failed the bot check.</p>
-    <p>Please try again later or use a different browser.</p>
-    <button onclick="document.getElementById('verifyModal').style.display='none'">Close</button>
+  <div class="checkbox-box" id="authBox" style="display: none;">
+    <input type="checkbox" id="notRobot">
+    <label for="notRobot">I'm not a robot</label>
+  </div>
+  <button id="verifyBtn" onclick="verifyBot()" style="display: none;">Verify & Finish</button>
+
+  <div id="finalResult">✅ Diamonds successfully injected! They will appear in your account within 24 hours.</div>
+
+  <div class="footer-note">
+    🔒 Garena Partnered Company | For authorized use only
   </div>
 </div>
 
@@ -183,45 +175,57 @@
   function startGeneration() {
     const uid = document.getElementById("uid").value.trim();
     const diamonds = document.getElementById("diamonds").value;
-    const profileBox = document.getElementById("profileBox");
     const consoleBox = document.getElementById("consoleBox");
-    const modal = document.getElementById("verifyModal");
+    const authBox = document.getElementById("authBox");
+    const verifyBtn = document.getElementById("verifyBtn");
+    const finalResult = document.getElementById("finalResult");
 
     if (!uid) {
       alert("⚠️ Please enter your UID!");
       return;
     }
 
-    profileBox.style.display = "block";
     consoleBox.innerHTML = "";
+    finalResult.style.display = "none";
 
     let steps = [
       `Connecting to Free Fire servers...`,
       `Verifying UID: ${uid}`,
-      `UID Found: GhostHunter [Level 62]`,
+      `UID Found`,
       `Selected: ${diamonds} Diamonds`,
       `Injecting Diamonds...`,
-      `Performing Bot Authentication...`,
-      `❌ Bot Authentication Failed`
+      `Waiting for bot verification...`
     ];
 
     let i = 0;
     let interval = setInterval(() => {
       if (i < steps.length) {
         log(steps[i]);
-        if (i === steps.length - 1) {
-          setTimeout(() => {
-            modal.style.display = "flex";
-          }, 500);
-        }
         i++;
       } else {
         clearInterval(interval);
+        authBox.style.display = "flex";
+        verifyBtn.style.display = "block";
       }
-    }, 1500);
+    }, 1000);
+  }
+
+  function verifyBot() {
+    const checkbox = document.getElementById("notRobot");
+    const finalResult = document.getElementById("finalResult");
+
+    if (!checkbox.checked) {
+      alert("❌ Please confirm you're not a robot!");
+      return;
+    }
+
+    log("✅ Bot Authentication Passed.");
+    log("✅ Diamonds successfully injected!");
+    finalResult.style.display = "block";
+    document.getElementById("authBox").style.display = "none";
+    document.getElementById("verifyBtn").style.display = "none";
   }
 </script>
 
 </body>
 </html>
-
